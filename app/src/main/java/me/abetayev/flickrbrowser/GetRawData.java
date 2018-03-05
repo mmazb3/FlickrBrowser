@@ -20,15 +20,24 @@ class GetRawData extends AsyncTask<String, Void, String> {
     private static final String TAG = "GetRawData";
 
     private DownLoadStatus mDownLoadStatus;
+    private final OnDownloadComplete mCallback;
 
-    public GetRawData() {
+    interface OnDownloadComplete {
+        void onDownloadComplete(String data, DownLoadStatus status);
+    }
+
+    public GetRawData(OnDownloadComplete callback) {
         mDownLoadStatus = DownLoadStatus.IDLE;
+        mCallback = callback;
     }
 
     @Override
     protected void onPostExecute(String s) {
         Log.d(TAG, "onPostExecute: parameter = " + s);
-
+        if(mCallback != null) {
+            mCallback.onDownloadComplete(s, mDownLoadStatus);
+        }
+        Log.d(TAG, "onPostExecute: ends");
     }
 
     @Override
